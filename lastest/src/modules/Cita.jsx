@@ -1,16 +1,21 @@
 import React from 'react';
-function Cita() 
-{
-  return(
+
+const Cita = (props) => {
+return(
     <>
             <div className="cita">
-              <p>Mascota: <span>Nina</span></p>
-              <p>Dueño: <span>Martin</span></p>
-              <p>Fecha: <span>2021-08-05</span></p>
-              <p>Hora: <span>08:20</span></p>
-              <p>Sintomas: <span>Le duele la pierna</span></p><button class="button elimnar u-full-width">Eliminar ×</button>
+              <p>Mascota: <span>{props.mascota}</span></p>
+              <p>Dueño: <span>{props.duenio}</span></p>
+              <p>Fecha: <span>{props.fecha}</span></p>
+              <p>Hora: <span>{props.hora}</span></p>
+              <p>Sintomas: <span>{props.sintomas}</span></p><button class="button elimnar u-full-width">Eliminar ×</button>
             </div>
     </>
   );
-}
+
+
+} 
+
+  
+
 export default Cita
