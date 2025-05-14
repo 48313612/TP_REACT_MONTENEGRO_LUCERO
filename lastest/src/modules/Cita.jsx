@@ -1,16 +1,17 @@
 import React from 'react';
 
-const Cita = (props) => {
-return(
-    <>
-        <div className="cita">
-        <p>Mascota: <span>{props.mascota}</span></p>
-        <p>Dueño: <span>{props.duenio}</span></p>
-        <p>Fecha: <span>{props.fecha}</span></p>
-        <p>Hora: <span>{props.hora}</span></p>
-        <p>Sintomas: <span>{props.sintomas}</span></p><button class="button elimnar u-full-width">Eliminar ×</button>
-        </div>
-    </>
+function Cita({ datos }) {
+  const { mascota, propietario, fecha, hora, sintomas } = datos;
+
+  return (
+    <div className="cita">
+      <p>Mascota: <span>{mascota}</span></p>
+      <p>Propietario: <span>{propietario}</span></p>
+      <p>Fecha: <span>{fecha}</span></p>
+      <p>Hora: <span>{hora}</span></p>
+      <p>Síntomas: <span>{sintomas}</span></p>
+    </div>
   );
-} 
-export default Cita
+}
+
+export default Cita;

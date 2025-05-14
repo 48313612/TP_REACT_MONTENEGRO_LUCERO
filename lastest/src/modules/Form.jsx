@@ -1,8 +1,8 @@
 
-import React from 'react';
-function Form() 
+import React, {useState} from 'react';
+function Formulario() 
 {
-    const Formulario = (enviarDatos) => {
+    const Formulario = ({enviarDatos}) => {
         const [cita, setCita] = useState({
           mascota: '',
           duenio: '',
@@ -19,15 +19,22 @@ function Form()
     
       const tomarDatos = (e) => {
        e.preventDefault();
-       let validoMascota = validarText(setCita.mascota);
-        let validoDuenio = validarText(setCita.duenio);
-        let validoFecha = validarFecha(setCita.fecha);
-        let validoSintomas = validarText(setCita.sintomas);
+       let validoMascota = validarText(cita.mascota);
+        let validoDuenio = validarText(cita.duenio);
+        let validoFecha = validarFecha(cita.fecha);
+        let validoHora = validarHora(cita.hora);
+        let validoSintomas = validarText(cita.sintomas);
+
+        if(validoMascota && validoDuenio && validoFecha && validoHora && validoSintomas)
+        {
+            enviarDatos(cita);
+        }
+        
       };
 
       const validarText = (text) => {
         let valido = true;
-        if(text != null)
+        if(text.trim().length <= 0)
         {
             valido = false;
         }
@@ -40,7 +47,7 @@ function Form()
         const inputFecha = new Date(fecha);
         const fechaActual = new Date();
         const fechaMinima = new Date("1950-01-01");
-        if(inputDate instanceof Date && !isNaN(inputDate) && inputDate >= minDate && inputDate <= currentDate)
+        if(inputDate instanceof Date && !isNaN(inputDate) && inputDate >= fechaMinima && inputDate <= fechaActual)
           {
             valido = true;
           }
@@ -48,27 +55,26 @@ function Form()
       };
 
       const validarHora = (hora) => {
-        let valido = true;
+        let valido = false;
         const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
-        if (!timePattern.test(hora)) {
-          valido = false;
-        }
-    
         const [hours, minutes] = hora.split(':').map(Number);
-    
-        const fechaActual = new Date();
-        const currentHours = currentTime.getHours();
-        const currentMinutes = currentTime.getMinutes();
-    
+        const horaInicio = 9;
+        const minutoInicio = 0;
+        const horaFin = 17;
+        const minutoFin = 0;
         const inputHora = new Date();
-        inputTime.setHours(hours);
-        inputTime.setMinutes(minutes);
-        inputTime.setSeconds(0);
-    
-        const isAfterMidnight = inputTime >= new Date().setHours(0, 0, 0, 0);
-        const isBeforeCurrentTime = inputTime <= currentTime;
-    
-        return isAfterMidnight && isBeforeCurrentTime;
+        inputHora.setHours(hours);
+        inputHora.setMinutes(minutes);
+        inputHora.setSeconds(0); 
+        const tiempoInicio = new Date();
+        tiempoInicio.setHours(horaInicio, minutoInicio, 0, 0);
+        const tiempoFin = new Date();
+        tiempoFin.setHours(horaFin, minutoFin, 0, 0);
+        if (timePattern.test(hora) || inputHora >= tiempoInicio && inputHora <= tiempoFin) 
+        {
+            valido = true; 
+        }
+        return valido;
       };
 
     return(
@@ -76,18 +82,33 @@ function Form()
             <form onSubmit={tomarDatos}>
                 <label>Nombre Mascota</label>
                 <input type="text" name="mascota" value="cita.mascota" class="u-full-width" placeholder="Nombre Mascota" onChange={detectoCambios} required/>
+                {
+                    !validoMascota && <p> ERROR. Ingrese un nombre valido </p>
+                }
                 <label>Nombre Dueño</label>
                 <input type="text" name="duenio" value="cita.duenio" class="u-full-width" placeholder="Nombre dueño de la mascota" onChange={detectoCambios} required/>
+                {
+                    !validoDuenio && <p> ERROR. Ingrese un nombre valido </p>
+                }
                 <label>Fecha</label>
                 <input type="date" name="fecha" value="cita.fecha" class="u-full-width" onChange={detectoCambios} required/>
+                {
+                    !validoFecha && <p> ERROR. Ingrese una fecha válida </p>
+                }
                 <label>hora</label>
                 <input type="time" name="hora" value="cita.hora" class="u-full-width" onChange={detectoCambios} required />
+                {
+                    !validohora && <p> ERROR. Ingrese una hora valida </p>
+                }
                 <label>Sintomas</label>
                 <textarea name="sintomas" value="cita.sintomas" class="u-full-width" onChange={detectoCambios} required></textarea>
+                {
+                    !validoSintomas && <p> ERROR. Ingrese sintomas validos </p>
+                }
                 <button type="submit" className="u-full-width button-primary">Agregar Cita</button>
             </form>
     </>
     );
 }
 
-export default Form
+export default Formulario
