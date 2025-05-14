@@ -1,114 +1,108 @@
+import React, { useState } from 'react';
 
-import React, {useState} from 'react';
-function Formulario() 
-{
-    const Formulario = ({enviarDatos}) => {
-        const [cita, setCita] = useState({
-          mascota: '',
-          duenio: '',
-          fecha: '',
-          hora: '',
-          sintomas: '',
-        });
+function Formulario({ enviarDatos }) {
+  const [cita, setCita] = useState({
+    mascota: '',
+    duenio: '',
+    fecha: '',
+    hora: '',
+    sintomas: '',
+  });
+
+  const [errores, setErrores] = useState({
+    mascota: false,
+    duenio: false,
+    fecha: false,
+    hora: false,
+    sintomas: false,
+  });
+
+  const detectoCambios = (e) => {
+    const { name, value } = e.target;
+    setCita((cita) => ({ ...cita, [name]: value }));
+  };
+
+  const tomarDatos = (e) => {
+    e.preventDefault();
+    const validoMascota = validarText(cita.mascota);
+    const validoDuenio = validarText(cita.duenio);
+    const validoFecha = validarFecha(cita.fecha);
+    const validoHora = validarHora(cita.hora);
+    const validoSintomas = validarText(cita.sintomas);
+
+    setErrores({
+      mascota: !validoMascota,
+      duenio: !validoDuenio,
+      fecha: !validoFecha,
+      hora: !validoHora,
+      sintomas: !validoSintomas,
+    });
+
+    if (validoMascota && validoDuenio && validoFecha && validoHora && validoSintomas) {
+      enviarDatos(cita);
+
+      setCita({
+        mascota: '',
+        duenio: '',
+        fecha: '',
+        hora: '',
+        sintomas: '',
+    });
     }
+  };
 
-    const detectoCambios = (e) => {
-        const { name, value } = e.target;
-        setCita((cita) => ({ ...cita, [name]: value }));
-      };
-    
-      const tomarDatos = (e) => {
-       e.preventDefault();
-       let validoMascota = validarText(cita.mascota);
-        let validoDuenio = validarText(cita.duenio);
-        let validoFecha = validarFecha(cita.fecha);
-        let validoHora = validarHora(cita.hora);
-        let validoSintomas = validarText(cita.sintomas);
+  const validarText = (text) => text.trim().length > 0;
 
-        if(validoMascota && validoDuenio && validoFecha && validoHora && validoSintomas)
-        {
-            enviarDatos(cita);
-        }
-        
-      };
+  const validarFecha = (fecha) => {
+    let valido = false;
+    const inputFecha = new Date(fecha);
+    const fechaActual = new Date();
+    if(inputFecha instanceof Date && !isNaN(inputFecha) && inputFecha >= fechaActual)
+      {
+        valido = true;
+      }
+      return valido;
+  };
 
-      const validarText = (text) => {
-        let valido = true;
-        if(text.trim().length <= 0)
-        {
-            valido = false;
-        }
+  const validarHora = (hora) => {
+    let valido = false;
+    const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
+    const [hours, minutes] = hora.split(':').map(Number);
+    const inputHora = new Date();
+    inputHora.setHours(hours, minutes, 0, 0);
 
-        return valido;
-       };
+    const tiempoInicio = new Date();
+    tiempoInicio.setHours(9, 0, 0, 0);
 
-       const validarFecha = (fecha) => {
-        let valido = false;
-        const inputFecha = new Date(fecha);
-        const fechaActual = new Date();
-        const fechaMinima = new Date("1950-01-01");
-        if(inputDate instanceof Date && !isNaN(inputDate) && inputDate >= fechaMinima && inputDate <= fechaActual)
-          {
-            valido = true;
-          }
-          return valido; 
-      };
+    const tiempoFin = new Date();
+    tiempoFin.setHours(17, 0, 0, 0);
+    if (timePattern.test(hora) && inputHora >= tiempoInicio && inputHora <= tiempoFin)
+    {
+        valido = true;
+    }
+    return valido;
+  };
 
-      const validarHora = (hora) => {
-        let valido = false;
-        const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
-        const [hours, minutes] = hora.split(':').map(Number);
-        const horaInicio = 9;
-        const minutoInicio = 0;
-        const horaFin = 17;
-        const minutoFin = 0;
-        const inputHora = new Date();
-        inputHora.setHours(hours);
-        inputHora.setMinutes(minutes);
-        inputHora.setSeconds(0); 
-        const tiempoInicio = new Date();
-        tiempoInicio.setHours(horaInicio, minutoInicio, 0, 0);
-        const tiempoFin = new Date();
-        tiempoFin.setHours(horaFin, minutoFin, 0, 0);
-        if (timePattern.test(hora) || inputHora >= tiempoInicio && inputHora <= tiempoFin) 
-        {
-            valido = true; 
-        }
-        return valido;
-      };
-
-    return(
-    <> 
-            <form onSubmit={tomarDatos}>
-                <label>Nombre Mascota</label>
-                <input type="text" name="mascota" value="cita.mascota" class="u-full-width" placeholder="Nombre Mascota" onChange={detectoCambios} required/>
-                {
-                    !validoMascota && <p> ERROR. Ingrese un nombre valido </p>
-                }
-                <label>Nombre Dueño</label>
-                <input type="text" name="duenio" value="cita.duenio" class="u-full-width" placeholder="Nombre dueño de la mascota" onChange={detectoCambios} required/>
-                {
-                    !validoDuenio && <p> ERROR. Ingrese un nombre valido </p>
-                }
-                <label>Fecha</label>
-                <input type="date" name="fecha" value="cita.fecha" class="u-full-width" onChange={detectoCambios} required/>
-                {
-                    !validoFecha && <p> ERROR. Ingrese una fecha válida </p>
-                }
-                <label>hora</label>
-                <input type="time" name="hora" value="cita.hora" class="u-full-width" onChange={detectoCambios} required />
-                {
-                    !validohora && <p> ERROR. Ingrese una hora valida </p>
-                }
-                <label>Sintomas</label>
-                <textarea name="sintomas" value="cita.sintomas" class="u-full-width" onChange={detectoCambios} required></textarea>
-                {
-                    !validoSintomas && <p> ERROR. Ingrese sintomas validos </p>
-                }
-                <button type="submit" className="u-full-width button-primary">Agregar Cita</button>
-            </form>
-    </>
-    );
+  return (
+    <form onSubmit={tomarDatos}>
+      <label>Nombre Mascota</label>
+        <input type="text" name="mascota" value={cita.mascota} className="u-full-width" placeholder="Escriba el nombre de su mascota" onChange={detectoCambios} required/>
+        {errores.mascota && <p> ERROR. Ingrese un nombre válido </p>}
+      <label>Nombre Dueño</label>
+        <input type="text" name="duenio" value={cita.duenio} className="u-full-width" placeholder="Escriba su nombre" onChange={detectoCambios} required/>
+        {errores.duenio && <p> ERROR. Ingrese un nombre válido </p>}
+      <label>Fecha</label>
+        <input type="date" name="fecha" value={cita.fecha} className="u-full-width" onChange={detectoCambios} min={new Date().toISOString().split("T")[0]}  max={new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0]} required/>
+        {errores.fecha && <p> ERROR. Ingrese una fecha válida </p>}
+      <label>Hora</label>
+        <input type="time" name="hora" value={cita.hora} className="u-full-width" onChange={detectoCambios} min="09:00" max="17:00" required/> 
+        {errores.hora && <p> ERROR. Ingrese una hora válida </p>}
+      <label>Síntomas</label>
+        <textarea name="sintomas" value={cita.sintomas} className="u-full-width" onChange={detectoCambios} placeholder="Escriba los sintomas de su mascota" required/>
+        {errores.sintomas && <p> ERROR. Ingrese síntomas válidos </p>}
+      <button type="submit" className="u-full-width button-primary"> Agregar cita </button>
+    </form>
+  );
 }
 
-export default Formulario
+export default Formulario;
