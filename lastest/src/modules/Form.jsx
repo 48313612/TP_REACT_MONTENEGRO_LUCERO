@@ -24,11 +24,11 @@ function Formulario({ enviarDatos }) {
 
   const tomarDatos = (e) => {
     e.preventDefault();
-    const validoMascota = validarText(cita.mascota);
-    const validoDuenio = validarText(cita.duenio);
+    const validoMascota = validarTexto(cita.mascota);
+    const validoDuenio = validarTexto(cita.duenio);
     const validoFecha = validarFecha(cita.fecha);
     const validoHora = validarHora(cita.hora);
-    const validoSintomas = validarText(cita.sintomas);
+    const validoSintomas = validarTexto(cita.sintomas);
 
     setErrores({
       mascota: !validoMascota,
@@ -51,7 +51,7 @@ function Formulario({ enviarDatos }) {
     }
   };
 
-  const validarText = (text) => text.trim().length > 0;
+  const validarTexto = (text) => text.trim().length > 0;
 
   const validarFecha = (fecha) => {
     let valido = false;
