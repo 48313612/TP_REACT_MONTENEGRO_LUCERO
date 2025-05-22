@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Cita from './Cita';
 
 function Listado({ citas, setCitas }) {
+  useEffect(() => {
+    localStorage.setItem('citas', JSON.stringify(citas));
+  }, [citas]);
+
   const eliminarCita = (citaAEliminar) => {
     setCitas(citas.filter(cita => cita !== citaAEliminar));
   };

@@ -4,7 +4,11 @@ import Formulario from './modules/Form.jsx';
 import Listado from './modules/Listado.jsx';
 
 function App() {
-  const [citas, setCitas] = useState([]);
+  const [citas, setCitas] = useState(() => {
+    const citasGuardadas = localStorage.getItem('citas');
+    return citasGuardadas ? JSON.parse(citasGuardadas) : [];
+  });
+  
   
   return (
     <>
